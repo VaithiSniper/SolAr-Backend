@@ -4,10 +4,11 @@ use num_derive::*;
 use num_traits::*;
 // use crate::state::CaseState::ToStart;
 
+// Structs we'll need for Case struct
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub enum Winner {
     Prosecutor,
-    Defendant
+    Defendant,
 }
 
 impl Winner {
@@ -20,29 +21,31 @@ impl Winner {
     }
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, FromPrimitive, ToPrimitive, Copy, Clone, PartialEq, Eq)]
+#[derive(
+    AnchorSerialize, AnchorDeserialize, FromPrimitive, ToPrimitive, Copy, Clone, PartialEq, Eq,
+)]
 pub enum CaseState {
     ToStart,
     WaitingForParticipants,
     Active,
     AwaitingRuling,
     Disposed,
-    Completed
+    Completed,
 }
 
 #[account]
 pub struct Case {
-    case_id: Pubkey,                // (32)
-    parties: [Pubkey; 2],           // (32*2)
-    case_winner: Option<Winner>,    // (2)
-    case_state: CaseState // (1)
+    parties: [Pubkey; 2],        // (32*2)
+    case_winner: Option<Winner>, // (2)
+    case_state: CaseState,       // (1)
 }
 
 impl Case {
-    // any constants we'll use
-    pub const MAXIMUM_SIZE_FOR_RENT: usize = (32) + (32 * 2) + (2) + (1);
+    // Maximum size for rent
+    pub const MAXIMUM_SIZE_FOR_RENT: usize = 8 + std::mem::size_of::<Case>();
 
-    pub fn start(&mut self, parties: [Pubkey; 2]) -> Result<()> {
+    // To create a new case
+    pub fn initialize_case(&mut self, parties: [Pubkey; 2]) -> Result<()> {
         // require_eq!(self.case_state, CaseState::ToStart, CaseError::AlreadyStartedCase);
         self.case_state = CaseState::WaitingForParticipants;
         self.parties = parties;
@@ -53,9 +56,7 @@ impl Case {
         let index = self.parties.iter().position(|&x| x == party);
         // require_neq!(index, None, CaseError::PubKeyNotFound);
         // require_neq!(&self.case_winner, None, CaseError::AlreadyDeclaredWinner);
-        let index_val = index.unwrap_or_else(|| {
-            0
-        });
+        let index_val = index.unwrap_or_else(|| 0);
         let winner = Some(Winner::from_usize(index_val));
         let winner_val = winner.unwrap();
         self.case_winner = winner_val;
@@ -69,5 +70,4 @@ impl Case {
 
         Ok(())
     }
-
 }

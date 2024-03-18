@@ -4,8 +4,8 @@
 seeds = false
 skip-lint = false
 
-[programs.localnet]
-solar = "D25GoHFNzhWrFciSxFxiTt6qEV93LYsv8vRZgqESQ9ni"
+[programs.devnet]
+solar = "8pszpn63dq6s7dLGQgtakQjmsDixJTZzLyCXkNdbmAYD"
 
 [registry]
 url = "https://api.apr.dev"
