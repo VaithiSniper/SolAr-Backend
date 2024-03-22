@@ -1,7 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::errors::CaseError;
 use num_derive::*;
-use num_traits::*;
 // use crate::state::CaseState::ToStart;
 
 // Structs we'll need for Case struct
@@ -49,6 +47,7 @@ impl Case {
         // require_eq!(self.case_state, CaseState::ToStart, CaseError::AlreadyStartedCase);
         self.case_state = CaseState::WaitingForParticipants;
         self.parties = parties;
+
         Ok(())
     }
 
