@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
 use crate::state::UserType;
+use crate::state::UserType;
 use instructions::*;
 use state::case::CaseState;
 
@@ -7,7 +8,7 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("9rR1HgxbpwuoATvj4QHjp7GcEiVG9dNbjciw4wW7TG2Z");
+declare_id!("WmiUzNXC9NadW5NiEaUUCHj8MSbcRyusELEBxemrryf");
 
 #[program]
 pub mod solar {
