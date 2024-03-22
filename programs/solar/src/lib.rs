@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+use crate::state::UserType;
 use instructions::*;
 use state::case::CaseState;
 
@@ -6,17 +7,32 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("5VtZR4MbaJb4iSY5rdvF8a3YdWECUNvvtajYrSJD1f9L");
+declare_id!("9rR1HgxbpwuoATvj4QHjp7GcEiVG9dNbjciw4wW7TG2Z");
 
 #[program]
 pub mod solar {
+
     use super::*;
 
-    pub fn setup_user(ctx: Context<SetupUser>, username: String) -> Result<()> {
-        instructions::setup_user(ctx, username)
+    pub fn verify_user(ctx: Context<VerifyUser>) -> Result<()> {
+        instructions::verify_user(ctx)
     }
 
-    pub fn setup_user_profile(ctx: Context<SetupUserProfile>, email: String, first_name: String, last_name: String, phone: String) -> Result<()> {
+    pub fn setup_user(
+        ctx: Context<SetupUser>,
+        username: String,
+        user_type: UserType,
+    ) -> Result<()> {
+        instructions::setup_user(ctx, username, user_type)
+    }
+
+    pub fn setup_user_profile(
+        ctx: Context<SetupUserProfile>,
+        email: String,
+        first_name: String,
+        last_name: String,
+        phone: String,
+    ) -> Result<()> {
         instructions::setup_user_profile(ctx, email, first_name, last_name, phone)
     }
 
