@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use crate::state::case::*;
 
-pub fn declare_winner(ctx: Context<DeclareWinner>, party: Pubkey) -> Result<()> {
+pub fn declare_winner(ctx: Context<DeclareWinner>, party: bool) -> Result<()> {
     ctx.accounts.case.declare_winner(party)
 }
 

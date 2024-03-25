@@ -1,4 +1,8 @@
 use anchor_lang::prelude::*;
+use crate::state::MAX_MEMBERS_FOR_EACH_PARTY;
+
+// Maximum number of cases that user can participate in
+pub const MAX_NUMBER_OF_PARTICIPATING_CASES: usize = 5;
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq, Debug, Copy)]
 pub enum UserType {
@@ -18,10 +22,11 @@ pub struct UserProfile {
     pub phone: String,
     pub type_of_user: UserType,
     pub verified: bool,
+    pub list_of_cases: [Pubkey; MAX_NUMBER_OF_PARTICIPATING_CASES],
+    pub total_participating_cases: u8
 }
 
 impl UserProfile {
-    // Maximum size for renAKWhaDu9yheRinzAeSrbkU35p5K1PkCF9wWQzJhg7xK1t
     pub const MAXIMUM_SIZE_FOR_RENT: usize = 8 + std::mem::size_of::<UserProfile>();
 
     pub fn initialize_user(
@@ -34,6 +39,8 @@ impl UserProfile {
         self.authority = authority;
         self.username = username;
         self.type_of_user = user_type;
+        self.list_of_cases = [Pubkey::default(); MAX_NUMBER_OF_PARTICIPATING_CASES];
+        self.total_participating_cases = 0;
         // Admin has to always be verified by default
         match self.type_of_user {
             UserType::Admin => self.verified = true,
@@ -61,6 +68,13 @@ impl UserProfile {
 
     pub fn verify_user(&mut self) -> Result<()> {
         self.verified = true;
+
+        Ok(())
+    }
+
+    pub fn add_case_to_user_account(&mut self, case_id: Pubkey) -> Result<()> {
+        self.list_of_cases[self.total_participating_cases as usize] = case_id;
+        self.total_participating_cases += 1;
 
         Ok(())
     }

@@ -3,12 +3,13 @@ use crate::state::UserType;
 use crate::state::UserType;
 use instructions::*;
 use state::case::CaseState;
+use state::case::PartyType;
 
 pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("WmiUzNXC9NadW5NiEaUUCHj8MSbcRyusELEBxemrryf");
+declare_id!("agckAcPBjoKxQFVNT25DZcw96LgsyU7KrwNKTUFDHZX");
 
 #[program]
 pub mod solar {
@@ -37,11 +38,15 @@ pub mod solar {
         instructions::setup_user_profile(ctx, email, first_name, last_name, phone)
     }
 
-    pub fn setup_case(ctx: Context<SetupCase>, parties: [Pubkey; 2]) -> Result<()> {
-        instructions::setup_case(ctx, parties)
+    pub fn setup_case(ctx: Context<SetupCase>, judge: Pubkey, name: String) -> Result<()> {
+        instructions::setup_case(ctx, judge, name)
     }
 
-    pub fn declare_winner(ctx: Context<DeclareWinner>, party: Pubkey) -> Result<()> {
+    pub fn add_member_to_party(ctx: Context<AddMembersToParty>, member: Pubkey, party_type: PartyType) -> Result<()> {
+        instructions::add_members_to_party(ctx, member, party_type)
+    }
+
+    pub fn declare_winner(ctx: Context<DeclareWinner>, party: bool) -> Result<()> {
         instructions::declare_winner(ctx, party)
     }
 

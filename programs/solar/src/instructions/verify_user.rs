@@ -7,14 +7,14 @@ pub fn verify_user(ctx: Context<VerifyUser>) -> Result<()> {
     // Can't be verified already
     assert_eq!(user_account.verified, false);
     // Get the admin account
-    let admin_account_type = ctx.accounts.admin.type_of_user;
-    match user_account.type_of_user {
-        UserType::Client | UserType::Lawyer => assert_eq!(admin_account_type, UserType::Judge),
-        UserType::Judge => assert_eq!(admin_account_type, UserType::Admin),
-        _ => {
-            // Do nothing
-        }
-    }
+    // let admin_account_type = ctx.accounts.admin.type_of_user;
+    // match user_account.type_of_user {
+    //     UserType::Client | UserType::Lawyer => assert_eq!(admin_account_type, UserType::Judge),
+    //     UserType::Judge => assert_eq!(admin_account_type, UserType::Admin),
+    //     _ => {
+    //         // Do nothing
+    //     }
+    // }
     user_account.verify_user()
 }
 

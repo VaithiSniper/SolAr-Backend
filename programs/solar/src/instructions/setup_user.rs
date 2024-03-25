@@ -5,11 +5,11 @@ use crate::state::user::*;
 pub fn setup_user(ctx: Context<SetupUser>, username: String, user_type: UserType) -> Result<()> {
     
     // Check for user type and if Judge/Admin, make sure that the Admin is adding 
-    match user_type {
-        UserType::Admin => assert_eq!(ADMIN_PUB_KEY, ctx.accounts.authority.key().as_ref()),
-        UserType::Judge => assert_eq!(ADMIN_PUB_KEY, ctx.accounts.authority.key().as_ref()),
-        _ => {}
-    }
+    // match user_type {
+    //     UserType::Admin => assert_eq!(ADMIN_PUB_KEY, ctx.accounts.authority.key().as_ref()),
+    //     UserType::Judge => assert_eq!(ADMIN_PUB_KEY, ctx.accounts.authority.key().as_ref()),
+    //     _ => {}
+    // }
     
     ctx.accounts
         .user

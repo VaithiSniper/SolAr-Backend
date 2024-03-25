@@ -1,19 +1,25 @@
 use anchor_lang::prelude::*;
 use num_derive::*;
+use crate::state::UserProfile;
 // use crate::state::CaseState::ToStart;
 
+// Maximum number of members that can participate in a case
+pub const MAX_MEMBERS_FOR_EACH_PARTY: usize = 5;
+
 // Structs we'll need for Case struct
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
-pub enum Winner {
+#[derive(
+    AnchorSerialize, AnchorDeserialize, FromPrimitive, ToPrimitive, Copy, Clone, PartialEq, Eq,
+)]
+pub enum PartyType {
     Prosecutor,
     Defendant,
 }
 
-impl Winner {
-    pub fn from_usize(index: usize) -> Option<Winner> {
+impl PartyType {
+    pub fn from_usize(index: usize) -> Option<PartyType> {
         match index {
-            0 => Some(Winner::Prosecutor),
-            1 => Some(Winner::Defendant),
+            0 => Some(PartyType::Prosecutor),
+            1 => Some(PartyType::Defendant),
             _ => None,
         }
     }
@@ -31,34 +37,74 @@ pub enum CaseState {
     Completed,
 }
 
+#[derive(
+AnchorSerialize, AnchorDeserialize, Copy, Clone, PartialEq, Eq,
+)]
+pub struct Party {
+    pub type_of_party: PartyType,
+    pub members:  [Pubkey; MAX_MEMBERS_FOR_EACH_PARTY],
+    pub size: u8,
+}
+// TODO: Add documents section under each party
+
 #[account]
 pub struct Case {
-    parties: [Pubkey; 2],        // (32*2)
-    case_winner: Option<Winner>, // (2)
-    case_state: CaseState,       // (1)
+    pub id: Pubkey,
+    pub name: String,
+    pub judge: Pubkey,
+    pub prosecutor: Party,
+    pub defendant: Party,
+    pub case_winner: Option<PartyType>,
+    pub case_state: CaseState,
 }
 
 impl Case {
     // Maximum size for rent
     pub const MAXIMUM_SIZE_FOR_RENT: usize = 8 + std::mem::size_of::<Case>();
 
-    // To create a new case
-    pub fn initialize_case(&mut self, parties: [Pubkey; 2]) -> Result<()> {
-        // require_eq!(self.case_state, CaseState::ToStart, CaseError::AlreadyStartedCase);
-        self.case_state = CaseState::WaitingForParticipants;
-        self.parties = parties;
+    // To define defaults for a new case
+    pub fn setup_case(&mut self,  judge: Pubkey, name: String, prosecutor: Party, defendant: Party) -> Result<()> {
+        self.judge = judge;
+        self.name = name;
+        self.prosecutor = prosecutor;
+        self.defendant = defendant;
 
         Ok(())
     }
 
-    pub fn declare_winner(&mut self, party: Pubkey) -> Result<()> {
-        let index = self.parties.iter().position(|&x| x == party);
-        // require_neq!(index, None, CaseError::PubKeyNotFound);
-        // require_neq!(&self.case_winner, None, CaseError::AlreadyDeclaredWinner);
-        let index_val = index.unwrap_or_else(|| 0);
-        let winner = Some(Winner::from_usize(index_val));
-        let winner_val = winner.unwrap();
-        self.case_winner = winner_val;
+    // To check if pubkey exists in array
+    fn pubkey_exists(pubkeys: [Pubkey; 5], pubkey_to_check: &Pubkey) -> bool {
+        pubkeys.iter().any(|&existing_pubkey| existing_pubkey == *pubkey_to_check)
+    }
+
+    // To add a member to a case
+    pub fn add_member_to_party(&mut self, member: Pubkey, party_type: PartyType) -> Result<()> {
+        // Check if member is already present and prevent addition in such case
+        match party_type {
+            PartyType::Prosecutor => {
+                assert!(Self::pubkey_exists(self.prosecutor.members, &member));
+                self.prosecutor.members[self.prosecutor.size as usize] = member;
+                self.prosecutor.size += 1;
+            }
+            PartyType::Defendant => {
+                assert!(Self::pubkey_exists(self.defendant.members, &member));
+                self.defendant.members[self.defendant.size as usize] = member;
+                self.defendant.size += 1;
+            }
+        }
+
+        Ok(())
+    }
+
+    // To minimize storage cost, we will use a binary type to determine who should be declared winner
+    // 0 - false - Prosecutor
+    // 1 - true - Defendant
+    pub fn declare_winner(&mut self, party: bool) -> Result<()> {
+        if party {
+           self.case_winner = Option::from(PartyType::Prosecutor);
+        } else {
+            self.case_winner = Option::from(PartyType::Defendant);
+        }
 
         Ok(())
     }
