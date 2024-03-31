@@ -1,20 +1,19 @@
 use anchor_lang::prelude::*;
 use crate::state::user::*;
+use crate::errors::*;
 
 pub fn verify_user(ctx: Context<VerifyUser>) -> Result<()> {
     // Get the user account
     let user_account = &mut ctx.accounts.user;
     // Can't be verified already
-    assert_eq!(user_account.verified, false);
+    require!(!user_account.verified, UserError::AlreadyVerified);
     // Get the admin account
-    // let admin_account_type = ctx.accounts.admin.type_of_user;
-    // match user_account.type_of_user {
-    //     UserType::Client | UserType::Lawyer => assert_eq!(admin_account_type, UserType::Judge),
-    //     UserType::Judge => assert_eq!(admin_account_type, UserType::Admin),
-    //     _ => {
-    //         // Do nothing
-    //     }
-    // }
+    let admin_account_type = ctx.accounts.admin.type_of_user;
+    match user_account.type_of_user {
+        UserType::Judge => require!(matches!(admin_account_type, UserType::Admin), UnauthorizedError::NotAdmin),
+        UserType::Client | UserType::Lawyer =>  require!(matches!(admin_account_type, UserType::Judge),  UnauthorizedError::NotJudge),
+        _ => {}
+    }
     user_account.verify_user()
 }
 

@@ -1,15 +1,14 @@
 use anchor_lang::prelude::*;
 use crate::state::constants::*;
 use crate::state::user::*;
+use crate::errors::*;
 
 pub fn setup_user(ctx: Context<SetupUser>, username: String, user_type: UserType) -> Result<()> {
-    
-    // Check for user type and if Judge/Admin, make sure that the Admin is adding 
-    // match user_type {
-    //     UserType::Admin => assert_eq!(ADMIN_PUB_KEY, ctx.accounts.authority.key().as_ref()),
-    //     UserType::Judge => assert_eq!(ADMIN_PUB_KEY, ctx.accounts.authority.key().as_ref()),
-    //     _ => {}
-    // }
+    // Check for user type and if Admin, make sure that the Admin is adding
+    match user_type {
+        UserType::Admin => require_keys_eq!(ADMIN_PUB_KEY, ctx.accounts.authority.key(), UnauthorizedError::NotAdmin),
+        _ => {}
+    }
     
     ctx.accounts
         .user

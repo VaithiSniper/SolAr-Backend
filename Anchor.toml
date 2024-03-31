@@ -6,12 +6,14 @@ skip-lint = false
 
 [programs.devnet]
 solar = "agckAcPBjoKxQFVNT25DZcw96LgsyU7KrwNKTUFDHZX"
+[programs.localnet]
+solar = "9ZmuZZ7ztT8fUsKne5AJA3QGzS4LEduLypg5axxJEEGY"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "Localnet"
 wallet = "/home/vaithee/.config/solana/id.json"
 
 [scripts]

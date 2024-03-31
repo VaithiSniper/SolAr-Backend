@@ -1,7 +1,11 @@
 use anchor_lang::prelude::*;
 use crate::state::case::*;
+use crate::state::user::*;
+use crate::errors::*;
 
 pub fn set_case_state(ctx: Context<SetCaseState>, case_state: CaseState) -> Result<()> {
+    require!(matches!(ctx.accounts.judge.type_of_user, UserType::Judge), UnauthorizedError::NotJudge);
+
     ctx.accounts.case.set_case_state(case_state)
 }
 
@@ -9,4 +13,7 @@ pub fn set_case_state(ctx: Context<SetCaseState>, case_state: CaseState) -> Resu
 pub struct SetCaseState<'info> {
     #[account(mut)]
     pub case: Account<'info, Case>,
+
+    #[account()]
+    pub judge: Account<'info, UserProfile>
 }

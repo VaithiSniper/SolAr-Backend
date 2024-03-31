@@ -1,8 +1,10 @@
 use anchor_lang::prelude::*;
 use crate::state::case::*;
 use crate::state::constants::*;
+use crate::errors::*;
  pub fn setup_case(ctx: Context<SetupCase>, judge: Pubkey, name: String) -> Result<()> {
         // TODO: Setup admin assertion as access_control macro
+        require_keys_eq!(ADMIN_PUB_KEY, ctx.accounts.admin.key(), UnauthorizedError::NotAdmin);
 
         // Creating embedded Party structs within Case
         let prosecutor = Party{

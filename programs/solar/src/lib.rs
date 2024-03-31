@@ -1,6 +1,5 @@
+use crate::state::UserType;
 use anchor_lang::prelude::*;
-use crate::state::UserType;
-use crate::state::UserType;
 use instructions::*;
 use state::case::CaseState;
 use state::case::PartyType;
@@ -9,7 +8,7 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("agckAcPBjoKxQFVNT25DZcw96LgsyU7KrwNKTUFDHZX");
+declare_id!("9ZmuZZ7ztT8fUsKne5AJA3QGzS4LEduLypg5axxJEEGY");
 
 #[program]
 pub mod solar {
@@ -42,7 +41,11 @@ pub mod solar {
         instructions::setup_case(ctx, judge, name)
     }
 
-    pub fn add_member_to_party(ctx: Context<AddMembersToParty>, member: Pubkey, party_type: PartyType) -> Result<()> {
+    pub fn add_member_to_party(
+        ctx: Context<AddMembersToParty>,
+        member: Pubkey,
+        party_type: PartyType,
+    ) -> Result<()> {
         instructions::add_members_to_party(ctx, member, party_type)
     }
 

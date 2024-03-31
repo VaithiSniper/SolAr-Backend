@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+use anchor_lang::solana_program;
 
 #[constant]
 pub const USER_TAG: &[u8] = b"USER_STATE";
@@ -16,4 +17,4 @@ pub const PROSECUTOR_TAG: &[u8] = b"PROSECUTOR_STATE";
 pub const DEFENDANT_TAG: &[u8] = b"DEFENDANT_STATE";
 
 #[constant]
-pub const ADMIN_PUB_KEY: &[u8] = b"6gHNdTY6JhB5x5SnArg6XkoTNH7one7aUByWyYWM2AJj";
+pub const ADMIN_PUB_KEY: Pubkey = solana_program::pubkey!("6gHNdTY6JhB5x5SnArg6XkoTNH7one7aUByWyYWM2AJj");

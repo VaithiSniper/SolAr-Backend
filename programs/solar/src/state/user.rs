@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
+use crate::instructions::{DeclareWinner, SetupUser};
 use crate::state::MAX_MEMBERS_FOR_EACH_PARTY;
+use crate::errors::*;
 
 // Maximum number of cases that user can participate in
 pub const MAX_NUMBER_OF_PARTICIPATING_CASES: usize = 5;
@@ -27,6 +29,7 @@ pub struct UserProfile {
 }
 
 impl UserProfile {
+
     pub const MAXIMUM_SIZE_FOR_RENT: usize = 8 + std::mem::size_of::<UserProfile>();
 
     pub fn initialize_user(
