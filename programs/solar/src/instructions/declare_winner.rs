@@ -1,7 +1,6 @@
-use anchor_lang::prelude::*;
-use crate::errors::*;
 use crate::state::case::*;
 use crate::state::user::*;
+use anchor_lang::prelude::*;
 
 pub fn declare_winner(ctx: Context<DeclareWinner>, party: bool) -> Result<()> {
     // require!(matches!(ctx.accounts.judge.type_of_user, UserType::Judge), UnauthorizedError::NotJudge);
@@ -15,5 +14,5 @@ pub struct DeclareWinner<'info> {
     pub case: Account<'info, Case>,
 
     #[account(mut)]
-    pub judge: Account<'info, UserProfile>
+    pub judge: Account<'info, UserProfile>,
 }

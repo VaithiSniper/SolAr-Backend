@@ -1,14 +1,20 @@
-use anchor_lang::prelude::*;
+use crate::errors::*;
 use crate::state::case::*;
 use crate::state::{UserProfile, UserType};
-use crate::state::constants::*;
-use crate::errors::*;
+use anchor_lang::prelude::*;
 
-pub fn add_members_to_party(ctx: Context<AddMembersToParty>, member: Pubkey, party_type: PartyType) -> Result<()> {
-    require!(matches!(ctx.accounts.judge.type_of_user, UserType::Judge), UnauthorizedError::NotJudge);
+pub fn add_members_to_party(
+    ctx: Context<AddMembersToParty>,
+    member: Pubkey,
+    party_type: PartyType,
+) -> Result<()> {
+    require!(
+        matches!(ctx.accounts.judge.type_of_user, UserType::Judge),
+        UnauthorizedError::NotJudge
+    );
 
     let user_account = &mut ctx.accounts.user;
-    _ = user_account.add_case_to_user_account(ctx.accounts.case.id);
+    _ = user_account.add_case_to_user_account(ctx.accounts.case.key());
     ctx.accounts.case.add_member_to_party(member, party_type)
 }
 

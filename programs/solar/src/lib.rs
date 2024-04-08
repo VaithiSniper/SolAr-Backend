@@ -8,7 +8,7 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("9ZmuZZ7ztT8fUsKne5AJA3QGzS4LEduLypg5axxJEEGY");
+declare_id!("8zmYTinF3yjHpQgqo7jhhcATj7GDvS2v1iZGZns1JABp");
 
 #[program]
 pub mod solar {
@@ -37,8 +37,8 @@ pub mod solar {
         instructions::setup_user_profile(ctx, email, first_name, last_name, phone)
     }
 
-    pub fn setup_case(ctx: Context<SetupCase>, judge: Pubkey, name: String) -> Result<()> {
-        instructions::setup_case(ctx, judge, name)
+    pub fn setup_case(ctx: Context<SetupCase>, bump: u8, name: String) -> Result<()> {
+        instructions::setup_case(ctx, bump, name)
     }
 
     pub fn add_member_to_party(

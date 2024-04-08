@@ -1,6 +1,5 @@
 use anchor_lang::prelude::*;
 use num_derive::*;
-use crate::state::UserProfile;
 // use crate::state::CaseState::ToStart;
 
 // Maximum number of members that can participate in a case
@@ -37,19 +36,16 @@ pub enum CaseState {
     Completed,
 }
 
-#[derive(
-AnchorSerialize, AnchorDeserialize, Copy, Clone, PartialEq, Eq,
-)]
+#[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone, PartialEq, Eq)]
 pub struct Party {
     pub type_of_party: PartyType,
-    pub members:  [Pubkey; MAX_MEMBERS_FOR_EACH_PARTY],
+    pub members: [Pubkey; MAX_MEMBERS_FOR_EACH_PARTY],
     pub size: u8,
 }
 // TODO: Add documents section under each party
 
 #[account]
 pub struct Case {
-    pub id: Pubkey,
     pub name: String,
     pub judge: Pubkey,
     pub prosecutor: Party,
@@ -63,7 +59,13 @@ impl Case {
     pub const MAXIMUM_SIZE_FOR_RENT: usize = 8 + std::mem::size_of::<Case>();
 
     // To define defaults for a new case
-    pub fn setup_case(&mut self,  judge: Pubkey, name: String, prosecutor: Party, defendant: Party) -> Result<()> {
+    pub fn setup_case(
+        &mut self,
+        judge: Pubkey,
+        name: String,
+        prosecutor: Party,
+        defendant: Party,
+    ) -> Result<()> {
         self.judge = judge;
         self.name = name;
         self.prosecutor = prosecutor;
@@ -74,7 +76,9 @@ impl Case {
 
     // To check if pubkey exists in array
     fn pubkey_exists(pubkeys: [Pubkey; 5], pubkey_to_check: &Pubkey) -> bool {
-        pubkeys.iter().any(|&existing_pubkey| existing_pubkey == *pubkey_to_check)
+        pubkeys
+            .iter()
+            .any(|&existing_pubkey| existing_pubkey == *pubkey_to_check)
     }
 
     // To add a member to a case
@@ -101,7 +105,7 @@ impl Case {
     // 1 - true - Defendant
     pub fn declare_winner(&mut self, party: bool) -> Result<()> {
         if party {
-           self.case_winner = Option::from(PartyType::Prosecutor);
+            self.case_winner = Option::from(PartyType::Prosecutor);
         } else {
             self.case_winner = Option::from(PartyType::Defendant);
         }

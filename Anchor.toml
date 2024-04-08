@@ -7,7 +7,7 @@ skip-lint = false
 [programs.devnet]
 solar = "agckAcPBjoKxQFVNT25DZcw96LgsyU7KrwNKTUFDHZX"
 [programs.localnet]
-solar = "9ZmuZZ7ztT8fUsKne5AJA3QGzS4LEduLypg5axxJEEGY"
+solar = "8zmYTinF3yjHpQgqo7jhhcATj7GDvS2v1iZGZns1JABp"
 
 [registry]
 url = "https://api.apr.dev"
