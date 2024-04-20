@@ -8,7 +8,7 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("8zmYTinF3yjHpQgqo7jhhcATj7GDvS2v1iZGZns1JABp");
+declare_id!("DL79DkQFevrJrjVFhi8W2sSgaxizW84vwxviTggQThvY");
 
 #[program]
 pub mod solar {
@@ -47,6 +47,22 @@ pub mod solar {
         party_type: PartyType,
     ) -> Result<()> {
         instructions::add_members_to_party(ctx, member, party_type)
+    }
+
+    pub fn add_document_to_case_and_party(
+        ctx: Context<AddDocumentToCaseAndParty>,
+        party_type: PartyType,
+        doc_id: String,
+    ) -> Result<()> {
+        instructions::add_document_to_case_and_party(ctx, party_type, doc_id)
+    }
+
+    pub fn get_documents_list_for_case_and_party(
+        ctx: Context<FetchDocuments>,
+        party_type: PartyType,
+        doc_id: String,
+    ) -> Result<Vec<String>> {
+        instructions::get_documents_list_for_case_and_party(ctx, party_type)
     }
 
     pub fn declare_winner(ctx: Context<DeclareWinner>, party: bool) -> Result<()> {

@@ -5,7 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-solar = "agckAcPBjoKxQFVNT25DZcw96LgsyU7KrwNKTUFDHZX"
+solar = "DL79DkQFevrJrjVFhi8W2sSgaxizW84vwxviTggQThvY"
 [programs.localnet]
 solar = "8zmYTinF3yjHpQgqo7jhhcATj7GDvS2v1iZGZns1JABp"
 
@@ -13,7 +13,7 @@ solar = "8zmYTinF3yjHpQgqo7jhhcATj7GDvS2v1iZGZns1JABp"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "Devnet"
 wallet = "/home/vaithee/.config/solana/id.json"
 
 [scripts]

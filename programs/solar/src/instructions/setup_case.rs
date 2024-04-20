@@ -9,16 +9,10 @@ pub fn setup_case(ctx: Context<SetupCase>, _bump: u8, name: String) -> Result<()
         require_keys_eq!(ADMIN_PUB_KEY, ctx.accounts.admin.key(), UnauthorizedError::NotAdmin);
 
         // Creating embedded Party structs within Case
-        let prosecutor = Party{
-            size: 0,
-            type_of_party: PartyType::Prosecutor,
-            members: [Pubkey::default(); MAX_MEMBERS_FOR_EACH_PARTY]
-        };
-        let defendant = Party{
-            size: 0,
-            type_of_party: PartyType::Defendant,
-            members: [Pubkey::default(); MAX_MEMBERS_FOR_EACH_PARTY]
-        };
+        let mut prosecutor= Party::default();
+        prosecutor.type_of_party = PartyType::Prosecutor;
+        let mut defendant= Party::default();
+        defendant.type_of_party = PartyType::Prosecutor;
 
         let judge= &mut ctx.accounts.judge;
 
