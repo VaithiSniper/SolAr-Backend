@@ -5,7 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-solar = "DL79DkQFevrJrjVFhi8W2sSgaxizW84vwxviTggQThvY"
+solar = "DTr36m7e12rJWnwdQgWQxdMyYkDKyyDJn21AXqR3orCh"
 [programs.localnet]
 solar = "8zmYTinF3yjHpQgqo7jhhcATj7GDvS2v1iZGZns1JABp"
 

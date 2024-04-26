@@ -1,10 +1,11 @@
 use anchor_lang::prelude::*;
 use num_derive::*;
-use solana_program::entrypoint::ProgramResult;
-// use crate::state::CaseState::ToStart;
 
 // Maximum number of members that can participate in a case
 pub const MAX_MEMBERS_FOR_EACH_PARTY: usize = 5;
+
+// Maximum number of members that can participate in a case
+pub const MAX_DOCUMENTS_FOR_PARTY_IN_A_CASE: usize = 10;
 
 // Structs we'll need for Case struct
 #[derive(
@@ -49,36 +50,21 @@ pub struct Party {
     pub type_of_party: PartyType,
     pub members: [Pubkey; MAX_MEMBERS_FOR_EACH_PARTY],
     pub size: u8,
-    pub documents: Vec<String>,
+    pub documents: [String; MAX_DOCUMENTS_FOR_PARTY_IN_A_CASE],
+    pub documents_count: u8,
 }
 
 // Implement the Default trait for the Party struct
 impl Default for Party {
     fn default() -> Self {
+        const EMPTY_STRING: String = String::new();
         Party {
             type_of_party: PartyType::Prosecutor,
             members: [Pubkey::default(); MAX_MEMBERS_FOR_EACH_PARTY],
             size: 0,
-            documents: Vec::new(), // Empty vector for documents
+            documents: [EMPTY_STRING; MAX_DOCUMENTS_FOR_PARTY_IN_A_CASE], // Empty vector for
+            documents_count: 0,
         }
-    }
-}
-
-// TODO: Add documents section under each party
-impl Party {
-    // Method to add a new document to the list
-    pub fn add_document(&mut self, id: String) {
-        self.documents.push(id);
-    }
-
-    // Method to remove a document from the list
-    pub fn remove_document(&mut self, id: String) {
-        self.documents.retain(|doc_id| *doc_id != id);
-    }
-
-    // Method to retrieve a document from the list by ID
-    pub fn get_document(&self, id: String) -> Option<&String> {
-        self.documents.iter().find(|doc_id| **doc_id == id)
     }
 }
 
@@ -139,8 +125,8 @@ impl Case {
     }
 
     // To minimize storage cost, we will use a binary type to determine who should be declared winner
-    // 0 - false - Prosecutor
-    // 1 - true - Defendant
+    // 1 - true - Prosecutor
+    // 0 - false - Defendant
     pub fn declare_winner(&mut self, party: bool) -> Result<()> {
         if party {
             self.case_winner = Option::from(PartyType::Prosecutor);
@@ -166,40 +152,15 @@ impl Case {
     ) -> Result<()> {
         match party_type {
             PartyType::Prosecutor => {
-                self.prosecutor.documents.push(doc_id);
+                self.prosecutor.documents[self.prosecutor.documents_count as usize] = doc_id;
+                self.prosecutor.documents_count += 1;
             }
             PartyType::Defendant => {
-                self.defendant.documents.push(doc_id);
+                self.defendant.documents[self.defendant.documents_count as usize] = doc_id;
+                self.defendant.documents_count += 1;
             }
         }
 
         Ok(())
     }
-
-
-    // Method to fetch document list
-    pub fn get_documents_list_for_case_and_party(
-        &mut self,
-        party_type: PartyType,
-    ) -> Result<Vec<String>> {
-        match party_type {
-            PartyType::Prosecutor => {
-                Ok(self.prosecutor.documents.clone())
-            }
-            PartyType::Defendant => {
-                Ok(self.defendant.documents.clone())
-            }
-        }
-
-    }
-
-    // // Method to remove a document from the list
-    // pub fn remove_document(&mut self, id: String) {
-    //     self.documents.retain(|doc_id| *doc_id != id);
-    // }
-    //
-    // // Method to retrieve a document from the list by ID
-    // pub fn get_document(&self, id: String) -> Option<&String> {
-    //     self.documents.iter().find(|doc_id| **doc_id == id)
-    // }
 }
