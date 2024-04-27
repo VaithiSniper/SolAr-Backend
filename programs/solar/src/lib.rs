@@ -8,7 +8,7 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("DTr36m7e12rJWnwdQgWQxdMyYkDKyyDJn21AXqR3orCh");
+declare_id!("5mF1xDgEjzi6UXwvoPjXKz8ff9Gktz1eD2Dw4xpPsKRe");
 
 #[program]
 pub mod solar {
@@ -55,6 +55,10 @@ pub mod solar {
         doc_id: String,
     ) -> Result<()> {
         instructions::add_document_to_case_and_party(ctx, party_type, doc_id)
+    }
+
+    pub fn reset_document_list_for_case(ctx: Context<ResetDocumentListForCase>) -> Result<()> {
+        instructions::reset_document_list_for_case(ctx)
     }
 
     pub fn declare_winner(ctx: Context<DeclareWinner>, party: bool) -> Result<()> {

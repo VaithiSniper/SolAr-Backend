@@ -163,4 +163,15 @@ impl Case {
 
         Ok(())
     }
+
+    // Method to reset document list for both parties
+    pub fn reset_document_list_for_case(&mut self) -> Result<()> {
+        const EMPTY_STRING: String = String::new();
+        self.prosecutor.documents = [EMPTY_STRING; MAX_DOCUMENTS_FOR_PARTY_IN_A_CASE];
+        self.defendant.documents = [EMPTY_STRING; MAX_DOCUMENTS_FOR_PARTY_IN_A_CASE];
+        self.defendant.documents_count = 0;
+        self.prosecutor.documents_count = 0;
+
+        Ok(())
+    }
 }
