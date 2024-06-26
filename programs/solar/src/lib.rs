@@ -8,7 +8,7 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("5mF1xDgEjzi6UXwvoPjXKz8ff9Gktz1eD2Dw4xpPsKRe");
+declare_id!("5Ee69kSQdBzTnPjz9CZVF15qbKzby9ajEksJU3aZbGxb");
 
 #[program]
 pub mod solar {
